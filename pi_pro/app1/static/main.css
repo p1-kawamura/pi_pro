@@ -1,0 +1,39 @@
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    justify-content: center;
+}
+.flex2 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.flex3 {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+.img-container {
+    display:flex;
+    flex-wrap: wrap;
+    width: 1500px;
+}
+.img-item {
+    width:12.5%;
+    height:300px;
+    text-align: center;
+    margin-left: 20px;
+}
+.table_1 th,td{
+    vertical-align: middle;
+}
+.block_title {
+    padding: 0.4em 0.5em;/*文字の上下 左右の余白*/
+    color: #494949;/*文字色*/
+    font-size: 2em;
+    background: #ffd6d6;/*背景色*/
+    border-left: solid 5px #ff8080;/*左線*/
+    border-bottom: solid 3px #d7d7d7;/*下線*/
+    margin: 80px 0px 30px 0px;
+  }

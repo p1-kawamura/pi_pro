@@ -1,0 +1,241 @@
+{% load humanize %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <title>Pi_pro　注文処理</title>
+</head>
+<body>
+    <div class="container mt-3 mb-5">
+
+        <!-- メニュー -->
+        <div>
+            <a href="{% url 'app1:index' %}">注文一覧に戻る</a>
+        </div>
+
+        <!-- 注文詳細 -->
+        <div style="margin-top: 50px;">
+            <table>
+                <tr>
+                    <td style="text-align: right;">区分：</td>
+                    <td>{{chumon.kubun}}</td>
+                </tr>
+                <tr>
+                    <td>注文番号：</td>
+                    <td>{{chumon.order_num}}</td>
+                </tr>
+                <tr>
+                    <td>注文日時：</td>
+                    <td>{{chumon.order_day}}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">E-mail：</td>
+                    <td>{{chumon.order_mail}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin-top: 30px; width: 50%;">
+            <table class="table table-bordered">
+                <tbody class="table_1">
+                    <tr>
+                        <th width="20%"><span id="pk" style="display: none;">{{pk}}</span></th>
+                        <th width="40%">注文者</th>
+                        <th>
+                            <div class="flex3" style="align-items: center;">
+                                <div>配送先</div>
+                                <div><button class="btn btn-primary btn-sm" id="btn_update">変更</button></div>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>氏名</th>
+                        <td>{{chumon.order_name}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_name" value="{{chumon.ship_name}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>郵便番号</th>
+                        <td>{{chumon.order_yubin}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_yubin" value="{{chumon.ship_yubin}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>都道府県</th>
+                        <td>{{chumon.order_pref}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_pref" value="{{chumon.ship_pref}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>市区町村</th>
+                        <td>{{chumon.order_city}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_city" value="{{chumon.ship_city}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>番地</th>
+                        <td>{{chumon.order_adress1}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_adress1" value="{{chumon.ship_adress1}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>ビル名等</th>
+                        <td>{{chumon.order_adress2}}</td>
+                        <td><input class="form-control form-control-sm" type="text" id="ship_adress2" value="{{chumon.ship_adress2}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>電話番号</th>
+                        <td>{{chumon.order_tel}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_tel" value="{{chumon.ship_tel}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>配送指定日</th>
+                        <td></td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_day" value="{{chumon.ship_day}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>配送時間</th>
+                        <td></td>
+                        <td>
+                            <div class="flex2">
+                                <div style="width: 50%;">
+                                    <select class="form-select form-select-sm" id="ship_time">
+                                        <option value=""></option>
+                                        <option value="午前中">午前中</option>
+                                        <option value="14時～16時">14時～16時</option>
+                                        <option value="16時～18時">16時～18時</option>
+                                        <option value="18時～20時">18時～20時</option>
+                                        <option value="19時～21時">19時～21時</option>
+                                    </select>
+                                </div>
+                                <div style="margin-left: 10px;">{{chumon.ship_time}}</div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 50px; width: 1200px;">
+            {% for i in item_list %}
+                <div class="block_title">{{i.gara}}</div>
+                <div>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>品番</th>
+                                <th>商品名</th>
+                                <th>カラー</th>
+                                <th>サイズ</th>
+                                <th>数量</th>
+                                <th>加工位置</th>
+                                <th>加工方法</th>
+                                <th>左右</th>
+                                <th>天地</th>
+                                <th>プリント色</th>
+                                <th>袋詰め</th>
+                            </tr>
+                            {% for h in i.dtl %}
+                            <tr>
+                                <td></td>
+                                <td>{{h.0}}</td>
+                                <td>{{h.1}}</td>
+                                <td>{{h.2}}</td>
+                                <td>{{h.3}}</td>
+                                <td>{{h.4}}</td>
+                                <td>{{h.5}}</td>
+                                <td>{{h.6}}</td>
+                                <td>{{h.7}}</td>
+                                <td>
+                                    {% for j in h.8 %}
+                                        {{j}}<br>
+                                    {% endfor %}
+                                </td>
+                                <td>{{h.9}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display: flex;">
+                    <div><img src="{{i.img}}"  style="width: 600px;"></div>
+                    <div style="margin-left: 100px; margin-top: 50px;">
+                        <div><button class="btn btn-primary" id="btn_body">ボディ発注CSV</button></div>
+                        <div style="margin-top: 30px;"><button class="btn btn-success" id="btn_shijisho">指示書CSV</button></div>
+                        <div style="margin-top: 30px;"><button class="btn btn-warning" id="btn_shukka">出荷CSV</button></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+
+
+    <!-- 各種Ajax -->
+    <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i <cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+  
+        var csrftoken = getCookie('csrftoken');
+  
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+  
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+  
+
+
+        
+        // 変更
+        document.getElementById("btn_update").addEventListener("click",function(){
+            $.ajax({
+                    'url': '{% url "app1:detail_update" %}',
+                    'type': 'POST',
+                    'data': {
+                        "pk":document.getElementById("pk").innerText,
+                        "ship_name":document.getElementById("ship_name").value,
+                        "ship_yubin":document.getElementById("ship_yubin").value,
+                        "ship_pref":document.getElementById("ship_pref").value,
+                        "ship_city":document.getElementById("ship_city").value,
+                        "ship_adress1":document.getElementById("ship_adress1").value,
+                        "ship_adress2":document.getElementById("ship_adress2").value,
+                        "ship_tel":document.getElementById("ship_tel").value,
+                        "ship_day":document.getElementById("ship_day").value,
+                        "ship_time":document.getElementById("ship_time").value,
+                    },
+                    'dataType': 'json'
+                })
+                .done(function(response){
+                    window.alert("変更しました！");
+                })
+        });
+    </script>
+
+
+</body>
+</html>

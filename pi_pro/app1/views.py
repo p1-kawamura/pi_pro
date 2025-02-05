@@ -5,6 +5,8 @@ from .forms import Image_form
 import io
 from django.http import JsonResponse
 import json
+from django.db.models import Max,Min
+import datetime
 
 
 def index(request):
@@ -30,6 +32,7 @@ def detail(request,pk):
         dic["img"]=Image.objects.get(title=detail[0].print_img).image.url
         li=[]
         for i in detail:
+            k=0
             js_1=json.loads(i.print_point)
             for h in range(len(js_1)):
                 js_2=json.loads(i.print_way)
@@ -37,10 +40,29 @@ def detail(request,pk):
                 js_4=json.loads(i.print_size_height)
                 js_5=json.loads(i.print_color)
 
-                li_s=[i.maker_hinmei,i.color,i.size,i.suryo,js_1[h],js_2[h],js_3[h],js_4[h],js_5[h],i.fukuro]
+                li_s=[k,i.maker_hinban,i.maker_hinmei,i.color,i.size,i.suryo,js_1[h],js_2[h],js_3[h],js_4[h],js_5[h],i.fukuro]
                 li.append(li_s)
+                k+=1
             
         dic["dtl"]=li
+        dic["row_all"]=detail.count() * len(js_1)
+        dic["row_point"]=len(js_1)
+
+        gara_min=Order_detail.objects.filter(gara=i).aggregate(Min("gara_day"))["gara_day__min"]
+        if  gara_min is None:
+            dic["gara_first"]=datetime.date.today().strftime("%Y-%m-%d")
+        else:
+            dic["gara_first"]=gara_min
+
+        gara_max=Order_detail.objects.filter(gara=i).aggregate(Max("gara_day"))["gara_day__max"]
+        if  gara_max is None:
+            dic["gara_last"]=""
+        else:
+            dic["gara_last"]=gara_max
+
+        dic["moto_hinban"]=detail[0].shouhin_code
+        dic["moto_hinmei"]=detail[0].hinmei
+
         item_list.append(dic)
 
     params={
@@ -55,6 +77,7 @@ def detail(request,pk):
 def detail_update(request):
     pk=request.POST.get("pk")
     od_li=Order_list.objects.get(id=pk)
+    od_li.ship_com=request.POST.get("ship_com")
     od_li.ship_name=request.POST.get("ship_name")
     od_li.ship_yubin=request.POST.get("ship_yubin")
     od_li.ship_pref=request.POST.get("ship_pref")
@@ -62,11 +85,34 @@ def detail_update(request):
     od_li.ship_adress1=request.POST.get("ship_adress1")
     od_li.ship_adress2=request.POST.get("ship_adress2")
     od_li.ship_tel=request.POST.get("ship_tel")
+    od_li.ship_limit=request.POST.get("ship_limit")
     od_li.ship_day=request.POST.get("ship_day")
     od_li.ship_time=request.POST.get("ship_time")
     od_li.save()
     d={}
     return JsonResponse(d)
+
+
+# 指示書CSV発行
+def csv_shijisho(request):
+    chumon_kubun=request.POST.get("chumon_kubun")
+    chumon_order_num=request.POST.get("chumon_order_num")
+    gara=request.POST.get("gara")
+    gara_first=request.POST.get("gara_first")
+    gara_last=request.POST.get("gara_last")
+    tantou=request.POST.get("tantou")
+    seisaku=request.POST.get("seisaku")
+    factory=request.POST.get("factory")
+    factory_day=request.POST.get("factory_day")
+    body_day=request.POST.get("body_day")
+    bikou=request.POST.get("bikou")
+
+    sh_csv=[]
+
+    d={}
+    return JsonResponse(d)
+
+
 
 
 # 注文CSV取込
@@ -326,6 +372,13 @@ def master_csv(request):
                     "print_size_height":i[17],
                     "print_color":i[18],
                     "fukuro":i[19],
+                    "sender_yubin":i[20],
+                    "sender_pref":i[21],
+                    "sender_city":i[22],
+                    "sender_adress1":i[23],
+                    "sender_com":i[24],
+                    "sender_name":i[25],
+                    "sender_tel":i[26],
                     }
                 )
             h+=1

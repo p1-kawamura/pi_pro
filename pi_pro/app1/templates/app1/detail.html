@@ -26,11 +26,11 @@
             <table>
                 <tr>
                     <td style="text-align: right;">区分：</td>
-                    <td>{{chumon.kubun}}</td>
+                    <td id="chumon_kubun">{{chumon.kubun}}</td>
                 </tr>
                 <tr>
                     <td>注文番号：</td>
-                    <td>{{chumon.order_num}}</td>
+                    <td id="chumon_order_num">{{chumon.order_num}}</td>
                 </tr>
                 <tr>
                     <td>注文日時：</td>
@@ -55,6 +55,11 @@
                                 <div><button class="btn btn-primary btn-sm" id="btn_update">変更</button></div>
                             </div>
                         </th>
+                    </tr>
+                    <tr>
+                        <th>会社</th>
+                        <td>{{chumon.order_com}}</td>
+                        <td><input class="form-control form-control-sm"  type="text" id="ship_com" value="{{chumon.ship_com}}" style="width: 100%;"></td>
                     </tr>
                     <tr>
                         <th>氏名</th>
@@ -92,12 +97,17 @@
                         <td><input class="form-control form-control-sm"  type="text" id="ship_tel" value="{{chumon.ship_tel}}" style="width: 100%;"></td>
                     </tr>
                     <tr>
-                        <th>配送指定日</th>
+                        <th>納品期限</th>
                         <td></td>
-                        <td><input class="form-control form-control-sm"  type="text" id="ship_day" value="{{chumon.ship_day}}" style="width: 100%;"></td>
+                        <td><input class="form-control form-control-sm"  type="date" id="ship_limit" value="{{chumon.ship_limit}}" style="width: 100%;"></td>
                     </tr>
                     <tr>
-                        <th>配送時間</th>
+                        <th>納品指定日</th>
+                        <td></td>
+                        <td><input class="form-control form-control-sm"  type="date" id="ship_day" value="{{chumon.ship_day}}" style="width: 100%;"></td>
+                    </tr>
+                    <tr>
+                        <th>時間指定</th>
                         <td></td>
                         <td>
                             <div class="flex2">
@@ -122,7 +132,8 @@
         <div style="margin-top: 50px; width: 1200px;">
             {% for i in item_list %}
                 <div class="block_title">{{i.gara}}</div>
-                <div>
+                <div style="font-size: 1.5em; color: brown;">■ {{i.moto_hinban}}　{{i.moto_hinmei}}</div>
+                <div style="margin-top: 20px;">
                     <table class="table table-bordered">
                         <tbody>
                             <tr>
@@ -137,24 +148,29 @@
                                 <th>天地</th>
                                 <th>プリント色</th>
                                 <th>袋詰め</th>
-                            </tr>
+                            </tr>                            
                             {% for h in i.dtl %}
                             <tr>
-                                <td></td>
-                                <td>{{h.0}}</td>
-                                <td>{{h.1}}</td>
-                                <td>{{h.2}}</td>
-                                <td>{{h.3}}</td>
-                                <td>{{h.4}}</td>
-                                <td>{{h.5}}</td>
+                                {% if forloop.counter == 1 %}
+                                <td rowspan="{{i.row_all}}">{{h.1}}</td>
+                                <td rowspan="{{i.row_all}}">{{h.2}}</td>
+                                {% endif %}
+                                
+                                {% if h.0 == 0 %}
+                                <td rowspan="{{i.row_point}}">{{h.3}}</td>
+                                <td rowspan="{{i.row_point}}">{{h.4}}</td>
+                                <td rowspan="{{i.row_point}}">{{h.5}}</td>
+                                {% endif %}
+
                                 <td>{{h.6}}</td>
                                 <td>{{h.7}}</td>
-                                <td>
-                                    {% for j in h.8 %}
-                                        {{j}}<br>
-                                    {% endfor %}
-                                </td>
+                                <td>{{h.8}}</td>
                                 <td>{{h.9}}</td>
+                                <td>{% for j in h.10 %}{{j}}<br>{% endfor %}</td>
+
+                                {% if h.0 == 0 %}
+                                <td rowspan="{{i.row_point}}">{{h.11}}</td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -162,10 +178,45 @@
                 </div>
                 <div style="display: flex;">
                     <div><img src="{{i.img}}"  style="width: 600px;"></div>
-                    <div style="margin-left: 100px; margin-top: 50px;">
-                        <div><button class="btn btn-primary" id="btn_body">ボディ発注CSV</button></div>
-                        <div style="margin-top: 30px;"><button class="btn btn-success" id="btn_shijisho">指示書CSV</button></div>
-                        <div style="margin-top: 30px;"><button class="btn btn-warning" id="btn_shukka">出荷CSV</button></div>
+                    <div style="margin-left: 100px; margin-top: 30px;">
+                        <div class="flex2">
+                            <div>初回日：</div>
+                            <div id="gara_first_{{i.gara}}">{{i.gara_first}}</div>
+                            <div style="margin-left: 50px;">前回日：</div>
+                            <div id="gara_last_{{i.gara}}">{{i.gara_last}}</div>
+                        </div>
+                        <div class="flex2 mt-4">
+                            <div>営業担当：</div>
+                            <div><input class="form-control" type="text" id="tantou_{{i.gara}}" style="width: 120px;"></div>
+                            <div style="margin-left: 30px;">制作担当：</div>
+                            <div><input class="form-control" type="text" id="seisaku_{{i.gara}}" style="width: 120px;"></div>
+                        </div>
+                        <div class="flex2 mt-4">
+                            <div>加工場：</div>
+                            <div>
+                                <select class="form-select" id="factory_{{i.gara}}">
+                                    <option value=""></option>
+                                    <option value="物流シルク">物流シルク</option>
+                                    <option value="ゲイト">ゲイト</option>
+                                    <option value="モリフロッキー">モリフロッキー</option>
+                                </select>
+                            </div>
+                            <div style="margin-left: 30px;">加工場発送日：</div>
+                            <div><input class="form-control" type="date" id="factory_day_{{i.gara}}" style="width: 150px;"></div>
+                        </div>
+                        <div class="flex2 mt-4">
+                            <div>ボディ入荷日：</div>
+                            <div><input class="form-control" type="date" id="body_day_{{i.gara}}" style="width: 150px;"></div>
+                        </div>
+                        <div class="mt-4">
+                            <div>備考欄</div>
+                            <div><textarea class="form-control" style="width: 100%;" id="bikou_{{i.gara}}" rows="5"></textarea></div>
+                        </div>
+                        <div class="flex2 mt-4">
+                            <div><button class="btn btn-primary" id="body_{{i.gara}}" name="btn_body">ボディ発注CSV</button></div>
+                            <div style="margin-left: 30px;"><button class="btn btn-success" id="shiji_{{i.gara}}" name="btn_shiji">指示書CSV</button></div>
+                            <div style="margin-left: 30px;"><button class="btn btn-warning" id="ship_{{i.gara}}" name="btn_ship">出荷CSV</button></div>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
@@ -218,6 +269,7 @@
                     'type': 'POST',
                     'data': {
                         "pk":document.getElementById("pk").innerText,
+                        "ship_com":document.getElementById("ship_com").value,
                         "ship_name":document.getElementById("ship_name").value,
                         "ship_yubin":document.getElementById("ship_yubin").value,
                         "ship_pref":document.getElementById("ship_pref").value,
@@ -225,6 +277,7 @@
                         "ship_adress1":document.getElementById("ship_adress1").value,
                         "ship_adress2":document.getElementById("ship_adress2").value,
                         "ship_tel":document.getElementById("ship_tel").value,
+                        "ship_limit":document.getElementById("ship_limit").value,
                         "ship_day":document.getElementById("ship_day").value,
                         "ship_time":document.getElementById("ship_time").value,
                     },
@@ -234,6 +287,40 @@
                     window.alert("変更しました！");
                 })
         });
+
+
+        // 指示書CSV
+        var item=document.getElementsByName("btn_shiji");
+        for (var i=0; i<item.length; i++){
+            item[i].addEventListener("click",function(){
+                var gara=this.id.replace("shiji_","");
+                $.ajax({
+                    'url': '{% url "app1:csv_shijisho" %}',
+                    'type': 'POST',
+                    'data': {
+                        "chumon_kubun":document.getElementById("chumon_kubun").innerText,
+                        "chumon_order_num":document.getElementById("chumon_order_num").innerText,
+                        "gara":gara,
+                        "gara_first":document.getElementById("gara_first_" + gara).innerText,
+                        "gara_last":document.getElementById("gara_last_" + gara).innerText,
+                        "tantou":document.getElementById("tantou_" + gara).value,
+                        "seisaku":document.getElementById("seisaku_" + gara).value,
+                        "factory":document.getElementById("factory_" + gara).value,
+                        "factory_day":document.getElementById("factory_day_" + gara).value,
+                        "body_day":document.getElementById("body_day_" + gara).value,
+                        "bikou":document.getElementById("bikou_" + gara).value
+
+                    },
+                    'dataType': 'json'
+                })
+                .done(function(response){
+                    
+                })
+            },false)
+        };
+
+
+
     </script>
 
 

@@ -38,6 +38,14 @@ class Master_gsp(models.Model):
     print_size_height=models.CharField("プリントサイズ_天地",max_length=255,blank=True,null=True)
     print_color=models.CharField("プリント色",max_length=255,blank=True,null=True)
     fukuro=models.CharField("袋詰め",max_length=255,blank=True,null=True)
+    sender_yubin=models.CharField("送り主_郵便番号",max_length=255,blank=True,null=True)
+    sender_pref=models.CharField("送り主_都道府県",max_length=255,blank=True,null=True)
+    sender_city=models.CharField("送り主_市区町村",max_length=255,blank=True,null=True)
+    sender_adress1=models.CharField("送り主_番地",max_length=255,blank=True,null=True)
+    sender_com=models.CharField("送り主_会社",max_length=255,blank=True,null=True)
+    sender_name=models.CharField("送り主_氏名",max_length=255,blank=True,null=True)
+    sender_tel=models.CharField("送り主_電話番号",max_length=255,blank=True,null=True)
+
 
     def __str__(self):
         return self.unq_id
@@ -67,6 +75,7 @@ class Order_list(models.Model):
     order_num=models.CharField("注文番号",max_length=255,blank=True,null=True)
     order_day=models.CharField("注文日時",max_length=255,blank=True,null=True)
     order_mail=models.CharField("Eメール",max_length=255,blank=True,null=True)
+    order_com=models.CharField("会社",max_length=255,blank=True,null=True)
     order_name=models.CharField("氏名",max_length=255,blank=True,null=True)
     order_yubin=models.CharField("郵便番号",max_length=255,blank=True,null=True)
     order_pref=models.CharField("都道府県",max_length=255,blank=True,null=True)
@@ -74,6 +83,7 @@ class Order_list(models.Model):
     order_adress1=models.CharField("番地",max_length=255,blank=True,null=True)
     order_adress2=models.CharField("ビル名",max_length=255,blank=True,null=True)
     order_tel=models.CharField("電話番号",max_length=255,blank=True,null=True)
+    ship_com=models.CharField("配送先_会社名",max_length=255,blank=True,null=True)
     ship_name=models.CharField("配送先_氏名",max_length=255,blank=True,null=True)
     ship_yubin=models.CharField("配送先_郵便番号",max_length=255,blank=True,null=True)
     ship_pref=models.CharField("配送先_都道府県",max_length=255,blank=True,null=True)
@@ -81,8 +91,9 @@ class Order_list(models.Model):
     ship_adress1=models.CharField("配送先_番地",max_length=255,blank=True,null=True)
     ship_adress2=models.CharField("配送先_ビル名",max_length=255,blank=True,null=True)
     ship_tel=models.CharField("配送先_電話番号",max_length=255,blank=True,null=True)
-    ship_day=models.CharField("配送希望日",max_length=255,blank=True,null=True)
-    ship_time=models.CharField("配送時間帯",max_length=255,blank=True,null=True)
+    ship_limit=models.CharField("納品期限",max_length=255,blank=True,null=True)
+    ship_day=models.CharField("納品指定日",max_length=255,blank=True,null=True)
+    ship_time=models.CharField("時間指定",max_length=255,blank=True,null=True)
     money=models.IntegerField("合計金額",blank=True,null=True)
     bikou=models.CharField("備考",max_length=255,blank=True,null=True)
     factory=models.CharField("加工場",max_length=255,blank=True,null=True)

@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import index,detail,detail_update,master_img_index,master_csv,img_imp,chumon_imp,csv_shijisho,free
+from .views import index,detail,detail_update,master_img_index,master_csv,img_imp,chumon_imp,make_shijisho,download_shijisho,free
 
 
 app_name="app1"
@@ -12,6 +12,7 @@ urlpatterns = [
     path('master_csv/', master_csv, name="master_csv"),
     path('img_imp/', img_imp, name="img_imp"),
     path('chumon_imp/', chumon_imp, name="chumon_imp"),
-    path('csv_shijisho/', csv_shijisho, name="csv_shijisho"),
+    path('make_shijisho/', make_shijisho, name="make_shijisho"),
+    path('download_shijisho/', download_shijisho, name="download_shijisho"),
     path('free/', free, name="free"),
 ]

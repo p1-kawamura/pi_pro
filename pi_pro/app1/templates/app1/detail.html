@@ -295,7 +295,7 @@
             item[i].addEventListener("click",function(){
                 var gara=this.id.replace("shiji_","");
                 $.ajax({
-                    'url': '{% url "app1:csv_shijisho" %}',
+                    'url': '{% url "app1:make_shijisho" %}',
                     'type': 'POST',
                     'data': {
                         "chumon_kubun":document.getElementById("chumon_kubun").innerText,
@@ -309,12 +309,11 @@
                         "factory_day":document.getElementById("factory_day_" + gara).value,
                         "body_day":document.getElementById("body_day_" + gara).value,
                         "bikou":document.getElementById("bikou_" + gara).value
-
                     },
                     'dataType': 'json'
                 })
                 .done(function(response){
-                    
+                    window.location.href='{% url "app1:download_shijisho" %}';
                 })
             },false)
         };

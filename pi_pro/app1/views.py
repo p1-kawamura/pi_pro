@@ -7,9 +7,20 @@ from django.http import JsonResponse
 import json
 from django.db.models import Max,Min
 import datetime
+from django.http import HttpResponse
+import urllib.parse
 
 
 def index(request):
+    if "kubun" not in request.session:
+        request.session["kubun"]=""
+    if "order_num" not in request.session:
+        request.session["order_num"]=""
+    if "gara" not in request.session:
+        request.session["gara"]=""
+    if "csv_list" not in request.session:
+        request.session["csv_list"]=[]
+
     master_all=Master_all.objects.all()
     chumon_list=Order_list.objects.all()
     params={
@@ -93,8 +104,8 @@ def detail_update(request):
     return JsonResponse(d)
 
 
-# 指示書CSV発行
-def csv_shijisho(request):
+# 指示書CSV作成
+def make_shijisho(request):
     chumon_kubun=request.POST.get("chumon_kubun")
     chumon_order_num=request.POST.get("chumon_order_num")
     gara=request.POST.get("gara")
@@ -107,12 +118,87 @@ def csv_shijisho(request):
     body_day=request.POST.get("body_day")
     bikou=request.POST.get("bikou")
 
-    sh_csv=[]
+    shiji_csv=[]
+    a=["注文番号","氏名","配送先会社","配送先氏名","配送先郵便番号","配送先都道府県","配送先市町村","配送先番地","配送先ビル名","配送先電話番号",
+       "送り主郵便番号","送り主都道府県","送り主市区町村","送り主番地建物","送り主会社名","送り主名前","送り主電話番号","納品期限","納品指定日","時間指定",
+       "品番","品名","カラー","サイズ","数量","柄名","初回日","前回日","加工位置","加工方法","画像","画像URL","プリントサイズ_左右","プリントサイズ_天地",
+       "プリント色（２次元配列）","袋詰め","加工場","加工場発送日","営業担当","制作担当","ボディ入荷日","備考"]
+    shiji_csv.append(a)
 
+    ins_li=Order_list.objects.get(kubun=chumon_kubun,order_num=chumon_order_num)
+    ins_det=Order_detail.objects.filter(kubun=chumon_kubun,order_num=chumon_order_num,gara=gara)
+    if chumon_kubun =="GSP":
+        ins_mas=Master_gsp.objects.filter(gara=gara)[0]
+
+    for i in ins_det:
+        a=[
+            chumon_kubun + "_" + str(chumon_order_num), #注文番号
+            ins_li.order_name, #氏名
+            ins_li.ship_com, #配送先会社
+            ins_li.ship_name, #配送先氏名
+            ins_li.ship_yubin, #配送先郵便番号
+            ins_li.ship_pref, #配送先都道府県
+            ins_li.ship_city, #配送先市町村
+            ins_li.ship_adress1, #配送先番地
+            ins_li.ship_adress2, #配送先ビル名
+            ins_li.ship_tel, #配送先電話番号
+            ins_mas.sender_yubin, #送り主郵便番号
+            ins_mas.sender_pref, #送り主都道府県
+            ins_mas.sender_city, #送り主市区町村
+            ins_mas.sender_adress1, #送り主番地建物
+            ins_mas.sender_com, #送り主会社名
+            ins_mas.sender_name, #送り主名前
+            ins_mas.sender_tel, #送り主電話番号
+            ins_li.ship_limit, #納品期限
+            ins_li.ship_day, #納品指定日
+            ins_li.ship_time, #時間指定
+            i.maker_hinban, #品番
+            i.maker_hinmei, #品名
+            i.color, #カラー
+            i.size, #サイズ
+            i.suryo, #数量
+            gara, #柄名
+            gara_first, #初回日
+            gara_last, #前回日
+            i.print_point, #加工位置
+            i.print_way, #加工方法
+            ins_mas.print_img, #画像
+            i.img_url, #画像URL
+            i.print_size_width, #プリントサイズ_左右
+            i.print_size_height, #プリントサイズ_天地
+            i.print_color, #プリント色（２次元配列）
+            i.fukuro, #袋詰め
+            factory, #加工場
+            factory_day, #加工場発送日
+            tantou, #営業担当
+            seisaku, #制作担当
+            body_day, #ボディ入荷日
+            bikou, #備考
+        ]
+        shiji_csv.append(a)
+
+    request.session["gara"]=gara
+    request.session["kubun"]=chumon_kubun
+    request.session["order_num"]=chumon_order_num
+    request.session["csv_list"]=shiji_csv
     d={}
     return JsonResponse(d)
 
 
+# 指示書CSVダウンロード
+def download_shijisho(request):
+    kubun=request.session["kubun"]
+    order_num=request.session["order_num"]
+    gara=request.session["gara"]
+    shiji_csv=request.session["csv_list"]
+    now=datetime.datetime.now()
+    filename=urllib.parse.quote(kubun + "_" + str(order_num) +  "_" + gara +"_" + format(now,"%Y%m%d%H%M%S") +".csv")
+    response = HttpResponse(content_type='text/csv; charset=CP932')
+    response['Content-Disposition'] =  "attachment;  filename='{}'; filename*=UTF-8''{}".format(filename, filename)
+    writer = csv.writer(response)
+    for line in shiji_csv:
+        writer.writerow(line)
+    return response
 
 
 # 注文CSV取込

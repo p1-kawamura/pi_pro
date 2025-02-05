@@ -96,10 +96,6 @@ class Order_list(models.Model):
     ship_time=models.CharField("時間指定",max_length=255,blank=True,null=True)
     money=models.IntegerField("合計金額",blank=True,null=True)
     bikou=models.CharField("備考",max_length=255,blank=True,null=True)
-    factory=models.CharField("加工場",max_length=255,blank=True,null=True)
-    factory_ship_day=models.CharField("加工場発送日",max_length=255,blank=True,null=True)
-    tantou_eigyo=models.CharField("営業担当",max_length=255,blank=True,null=True)
-    tantou_seisaku=models.CharField("制作担当",max_length=255,blank=True,null=True)
 
     def __str__(self):
         return self.order_num

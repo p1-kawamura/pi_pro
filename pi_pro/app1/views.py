@@ -34,6 +34,8 @@ def index(request):
 def detail(request,pk):
     chumon=Order_list.objects.get(pk=pk)
     gara_list=list(Order_detail.objects.filter(kubun=chumon.kubun,order_num=chumon.order_num).values_list("gara",flat=True).order_by("gara").distinct())
+    if chumon.kubun=="GSP":
+        sender=Master_gsp.objects.filter(gara=gara_list[0])[0]
 
     item_list=[]
     for i in gara_list:
@@ -80,6 +82,7 @@ def detail(request,pk):
         "chumon":chumon,
         "pk":pk,
         "item_list":item_list,
+        "sender":sender,
     }
     return render(request,"app1/detail.html",params)
 
@@ -131,6 +134,22 @@ def make_shijisho(request):
         ins_mas=Master_gsp.objects.filter(gara=gara)[0]
 
     for i in ins_det:
+
+        # Order_detail
+        i.shi_gara_first=gara_first
+        i.shi_gara_last=gara_last
+        i.shi_factory=factory
+        i.shi_factory_day=factory_day
+        i.shi_tantou=tantou
+        i.shi_seisaku=seisaku
+        i.body_day=body_day
+        i.shi_bikou=bikou
+        i.gara_day=datetime.date.today().strftime("%Y-%m-%d")
+        if i.img_url == None or i.img_url=="":
+            i.img_url=Image.objects.get(title=i.print_img).image.url
+        i.save()
+
+        # CSV作成
         a=[
             chumon_kubun + "_" + str(chumon_order_num), #注文番号
             ins_li.order_name, #氏名
@@ -192,11 +211,84 @@ def download_shijisho(request):
     gara=request.session["gara"]
     shiji_csv=request.session["csv_list"]
     now=datetime.datetime.now()
-    filename=urllib.parse.quote(kubun + "_" + str(order_num) +  "_" + gara +"_" + format(now,"%Y%m%d%H%M%S") +".csv")
+    filename=urllib.parse.quote("指示書_" + kubun + "_" + str(order_num) +  "_" + gara +"_" + format(now,"%Y%m%d%H%M%S") +".csv")
     response = HttpResponse(content_type='text/csv; charset=CP932')
     response['Content-Disposition'] =  "attachment;  filename='{}'; filename*=UTF-8''{}".format(filename, filename)
     writer = csv.writer(response)
     for line in shiji_csv:
+        writer.writerow(line)
+    return response
+
+
+# 出荷CSV作成
+def make_ship(request):
+    chumon_kubun=request.POST.get("chumon_kubun")
+    chumon_order_num=request.POST.get("chumon_order_num")
+    gara=request.POST.get("gara")
+    tantou=request.POST.get("tantou")
+    factory=request.POST.get("factory")
+    factory_day=request.POST.get("factory_day")
+
+    ship_csv=[]
+    a=["外部サイト名","受注番号","営業担当","送り先郵便番号","送り先都道府県","送り先市区町村","送り先番地建物","送り先会社名","送り先名前","送り先電話番号",
+       "送り主郵便番号","送り主都道府県","送り主市区町村","送り主番地建物","送り主会社名","送り主名前","送り主電話番号","送り状品名","柄名","加工場",
+       "出荷日","日付指定","納品期限日","時間指定","代引金額","出荷表紙備考"]
+    ship_csv.append(a)
+
+    ins_li=Order_list.objects.get(kubun=chumon_kubun,order_num=chumon_order_num)
+    if chumon_kubun =="GSP":
+        ins_mas=Master_gsp.objects.filter(gara=gara)[0]
+
+    a=[
+        "Pi-pro", #外部サイト名
+        chumon_kubun + "_" + str(chumon_order_num), #受注番号
+        tantou, #営業担当
+        ins_li.ship_yubin.replace("-",""), #送り先郵便番号
+        ins_li.ship_pref, #送り先都道府県
+        ins_li.ship_city, #送り先市区町村
+        ins_li.ship_adress1 + ins_li.ship_adress2, #送り先番地建物
+        ins_li.ship_com, #送り先会社名
+        ins_li.ship_name, #送り先名前
+        ins_li.ship_tel.replace("-",""), #送り先電話番号
+        ins_mas.sender_yubin.replace("-",""), #送り主郵便番号
+        ins_mas.sender_pref, #送り主都道府県
+        ins_mas.sender_city, #送り主市区町村
+        ins_mas.sender_adress1, #送り主番地建物
+        ins_mas.sender_com, #送り主会社名
+        ins_mas.sender_name, #送り主名前
+        ins_mas.sender_tel.replace("-",""), #送り主電話番号
+        "", #送り状品名
+        gara, #柄名
+        factory, #加工場
+        factory_day, #出荷日
+        ins_li.ship_day, #日付指定
+        "", #納品期限日
+        ins_li.ship_time, #時間指定
+        "", #代引金額
+        "" #出荷表紙備考
+    ]
+    ship_csv.append(a)
+
+    request.session["gara"]=gara
+    request.session["kubun"]=chumon_kubun
+    request.session["order_num"]=chumon_order_num
+    request.session["csv_list"]=ship_csv
+    d={}
+    return JsonResponse(d)
+
+
+# 出荷CSVダウンロード
+def download_ship(request):
+    kubun=request.session["kubun"]
+    order_num=request.session["order_num"]
+    gara=request.session["gara"]
+    ship_csv=request.session["csv_list"]
+    now=datetime.datetime.now()
+    filename=urllib.parse.quote("出荷用_" + kubun + "_" + str(order_num) +  "_" + gara +"_" + format(now,"%Y%m%d%H%M%S") +".csv")
+    response = HttpResponse(content_type='text/csv; charset=CP932')
+    response['Content-Disposition'] =  "attachment;  filename='{}'; filename*=UTF-8''{}".format(filename, filename)
+    writer = csv.writer(response)
+    for line in ship_csv:
         writer.writerow(line)
     return response
 

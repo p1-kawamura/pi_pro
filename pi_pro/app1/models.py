@@ -129,6 +129,13 @@ class Order_detail(models.Model):
     print_size_height=models.CharField("プリントサイズ_天地",max_length=255,blank=True,null=True)
     print_color=models.CharField("プリント色",max_length=255,blank=True,null=True)
     fukuro=models.CharField("袋詰め",max_length=255,blank=True,null=True)
+    shi_gara_first=models.CharField("初回日",max_length=255,blank=True,null=True)
+    shi_gara_last=models.CharField("前回日",max_length=255,blank=True,null=True)
+    shi_factory=models.CharField("加工場",max_length=255,blank=True,null=True)
+    shi_factory_day=models.CharField("加工場発送日",max_length=255,blank=True,null=True)
+    shi_tantou=models.CharField("営業",max_length=255,blank=True,null=True)
+    shi_seisaku=models.CharField("制作",max_length=255,blank=True,null=True)
+    shi_bikou=models.CharField("備考",max_length=255,blank=True,null=True)
 
     def __str__(self):
         return self.order_num

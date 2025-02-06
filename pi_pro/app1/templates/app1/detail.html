@@ -43,68 +43,86 @@
             </table>
         </div>
 
-        <div style="margin-top: 30px; width: 50%;">
+        <div style="margin-top: 30px; width: 65%;">
             <table class="table table-bordered">
                 <tbody class="table_1">
                     <tr>
-                        <th width="20%"><span id="pk" style="display: none;">{{pk}}</span></th>
-                        <th width="40%">注文者</th>
+                        <th width="15%"><span id="pk" style="display: none;">{{pk}}</span></th>
+                        <th width="25%">注文者</th>
                         <th>
                             <div class="flex3" style="align-items: center;">
                                 <div>配送先</div>
                                 <div><button class="btn btn-primary btn-sm" id="btn_update">変更</button></div>
                             </div>
                         </th>
+                        <th width="25%">送り主</th>
                     </tr>
                     <tr>
                         <th>会社</th>
                         <td>{{chumon.order_com}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_com" value="{{chumon.ship_com}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_com}}</td>
                     </tr>
                     <tr>
                         <th>氏名</th>
                         <td>{{chumon.order_name}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_name" value="{{chumon.ship_name}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_name}}</td>
                     </tr>
                     <tr>
                         <th>郵便番号</th>
                         <td>{{chumon.order_yubin}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_yubin" value="{{chumon.ship_yubin}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_yubin}}</td>
                     </tr>
                     <tr>
                         <th>都道府県</th>
                         <td>{{chumon.order_pref}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_pref" value="{{chumon.ship_pref}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_pref}}</td>
                     </tr>
                     <tr>
                         <th>市区町村</th>
                         <td>{{chumon.order_city}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_city" value="{{chumon.ship_city}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_city}}</td>
                     </tr>
                     <tr>
                         <th>番地</th>
                         <td>{{chumon.order_adress1}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_adress1" value="{{chumon.ship_adress1}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_adress1}}</td>
                     </tr>
                     <tr>
                         <th>ビル名等</th>
                         <td>{{chumon.order_adress2}}</td>
                         <td><input class="form-control form-control-sm" type="text" id="ship_adress2" value="{{chumon.ship_adress2}}" style="width: 100%;"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>電話番号</th>
                         <td>{{chumon.order_tel}}</td>
                         <td><input class="form-control form-control-sm"  type="text" id="ship_tel" value="{{chumon.ship_tel}}" style="width: 100%;"></td>
+                        <td>{{sender.sender_tel}}</td>
                     </tr>
                     <tr>
                         <th>納品期限</th>
                         <td></td>
-                        <td><input class="form-control form-control-sm"  type="date" id="ship_limit" value="{{chumon.ship_limit}}" style="width: 100%;"></td>
+                        <td><input class="form-control form-control-sm"  type="date" id="ship_limit" value="{{chumon.ship_limit}}" style="width: 50%;"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>納品指定日</th>
                         <td></td>
-                        <td><input class="form-control form-control-sm"  type="date" id="ship_day" value="{{chumon.ship_day}}" style="width: 100%;"></td>
+                        <td>
+                            <div class="flex2">
+                                <div style="width: 50%;">
+                                    <input class="form-control form-control-sm"  type="date" id="ship_day" value="{{chumon.ship_day}}">
+                                </div>
+                                <div style="margin-left: 10px;">{{chumon.ship_day}}</div>
+                            </div>
+                        </td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>時間指定</th>
@@ -124,6 +142,7 @@
                                 <div style="margin-left: 10px;">{{chumon.ship_time}}</div>
                             </div>
                         </td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -177,7 +196,7 @@
                     </table>
                 </div>
                 <div style="display: flex;">
-                    <div><img src="{{i.img}}"  style="width: 600px;"></div>
+                    <div><img src="{{i.img}}" style="width: 600px;"></div>
                     <div style="margin-left: 100px; margin-top: 30px;">
                         <div class="flex2">
                             <div>初回日：</div>
@@ -294,21 +313,49 @@
         for (var i=0; i<item.length; i++){
             item[i].addEventListener("click",function(){
                 var gara=this.id.replace("shiji_","");
+                var chumon_kubun=document.getElementById("chumon_kubun").innerText;
+                var chumon_order_num=document.getElementById("chumon_order_num").innerText;
+                var gara_first=document.getElementById("gara_first_" + gara).innerText;
+                var gara_last=document.getElementById("gara_last_" + gara).innerText;
+                var tantou=document.getElementById("tantou_" + gara).value;
+                var seisaku=document.getElementById("seisaku_" + gara).value;
+                var factory=document.getElementById("factory_" + gara).value;
+                var factory_day=document.getElementById("factory_day_" + gara).value;
+                var body_day=document.getElementById("body_day_" + gara).value;
+                var bikou=document.getElementById("bikou_" + gara).value;
+
+                if (tantou==""){
+                    window.alert("営業担当を入力してください！");
+                    return
+                } else if(seisaku==""){
+                    window.alert("制作担当を入力してください！");
+                    return
+                } else if(factory==""){
+                    window.alert("加工場を選択してください！");
+                    return
+                } else if(factory_day==""){
+                    window.alert("加工場発送日を入力してください！");
+                    return
+                } else if(body_day==""){
+                    window.alert("ボディ入荷日を入力してください！");
+                    return
+                }; 
+
                 $.ajax({
                     'url': '{% url "app1:make_shijisho" %}',
                     'type': 'POST',
                     'data': {
-                        "chumon_kubun":document.getElementById("chumon_kubun").innerText,
-                        "chumon_order_num":document.getElementById("chumon_order_num").innerText,
+                        "chumon_kubun":chumon_kubun,
+                        "chumon_order_num":chumon_order_num,
                         "gara":gara,
-                        "gara_first":document.getElementById("gara_first_" + gara).innerText,
-                        "gara_last":document.getElementById("gara_last_" + gara).innerText,
-                        "tantou":document.getElementById("tantou_" + gara).value,
-                        "seisaku":document.getElementById("seisaku_" + gara).value,
-                        "factory":document.getElementById("factory_" + gara).value,
-                        "factory_day":document.getElementById("factory_day_" + gara).value,
-                        "body_day":document.getElementById("body_day_" + gara).value,
-                        "bikou":document.getElementById("bikou_" + gara).value
+                        "gara_first":gara_first,
+                        "gara_last":gara_last,
+                        "tantou":tantou,
+                        "seisaku":seisaku,
+                        "factory":factory,
+                        "factory_day":factory_day,
+                        "body_day":body_day,
+                        "bikou":bikou
                     },
                     'dataType': 'json'
                 })
@@ -318,6 +365,47 @@
             },false)
         };
 
+
+        // 出荷用CSV
+        var item=document.getElementsByName("btn_ship");
+        for (var i=0; i<item.length; i++){
+            item[i].addEventListener("click",function(){
+                var gara=this.id.replace("ship_","");
+                var chumon_kubun=document.getElementById("chumon_kubun").innerText;
+                var chumon_order_num=document.getElementById("chumon_order_num").innerText;
+                var tantou=document.getElementById("tantou_" + gara).value;
+                var factory=document.getElementById("factory_" + gara).value;
+                var factory_day=document.getElementById("factory_day_" + gara).value;
+
+                if (tantou==""){
+                    window.alert("営業担当を入力してください！");
+                    return
+                } else if(factory==""){
+                    window.alert("加工場を選択してください！");
+                    return
+                } else if(factory_day==""){
+                    window.alert("加工場発送日を入力してください！");
+                    return
+                };
+
+                $.ajax({
+                    'url': '{% url "app1:make_ship" %}',
+                    'type': 'POST',
+                    'data': {
+                        "chumon_kubun":chumon_kubun,
+                        "chumon_order_num":chumon_order_num,
+                        "gara":gara,
+                        "tantou":tantou,
+                        "factory":factory,
+                        "factory_day":factory_day
+                    },
+                    'dataType': 'json'
+                })
+                .done(function(response){
+                    window.location.href='{% url "app1:download_ship" %}';
+                })
+            },false)
+        };
 
 
     </script>

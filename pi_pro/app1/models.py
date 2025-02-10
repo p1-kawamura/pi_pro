@@ -23,7 +23,8 @@ class Master_gsp(models.Model):
     gsp_sku=models.CharField("GSP_SKUコード",max_length=255,blank=True,null=True)
     color=models.CharField("カラー",max_length=255,blank=True,null=True)
     size=models.CharField("サイズ",max_length=255,blank=True,null=True)
-    price=models.IntegerField("原価",default=0,blank=True,null=True)
+    price_buy=models.IntegerField("原価",default=0,blank=True,null=True)
+    price_sell=models.IntegerField("請求単価",default=0,blank=True,null=True)
     maker=models.CharField("メーカー",max_length=255,blank=True,null=True)
     maker_sku=models.CharField("メーカー_SKU",max_length=255,blank=True,null=True)
     maker_hinban=models.CharField("品番",max_length=255,blank=True,null=True)
@@ -45,7 +46,6 @@ class Master_gsp(models.Model):
     sender_com=models.CharField("送り主_会社",max_length=255,blank=True,null=True)
     sender_name=models.CharField("送り主_氏名",max_length=255,blank=True,null=True)
     sender_tel=models.CharField("送り主_電話番号",max_length=255,blank=True,null=True)
-
 
     def __str__(self):
         return self.unq_id
@@ -110,7 +110,7 @@ class Order_detail(models.Model):
     color=models.CharField("カラー",max_length=255,blank=True,null=True)
     size=models.CharField("サイズ",max_length=255,blank=True,null=True)
     suryo=models.IntegerField("数量",blank=True,null=True)
-    tanka=models.IntegerField("単価",blank=True,null=True)
+    price_last=models.IntegerField("エンドユーザー単価",blank=True,null=True)
     img_url=models.CharField("画像URL",max_length=255,blank=True,null=True)
     maker_name=models.CharField("メーカー名",max_length=255,blank=True,null=True)
     maker_sku=models.CharField("メーカー_SKU",max_length=255,blank=True,null=True)
@@ -118,7 +118,8 @@ class Order_detail(models.Model):
     maker_hinmei=models.CharField("メーカー_品名",max_length=255,blank=True,null=True)
     maker_color_code=models.CharField("メーカー_カラーコード",max_length=255,blank=True,null=True)
     maker_size_code=models.CharField("メーカー_サイズコード",max_length=255,blank=True,null=True)
-    genka=models.IntegerField("原価",blank=True,null=True)
+    price_buy=models.IntegerField("原価",blank=True,null=True)
+    price_sell=models.IntegerField("請求単価",blank=True,null=True)
     body_day=models.CharField("入荷予定日",max_length=255,blank=True,null=True)
     gara=models.CharField("柄名",max_length=255,blank=True,null=True)
     gara_day=models.CharField("柄名_使用日",max_length=255,blank=True,null=True)

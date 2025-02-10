@@ -14,14 +14,14 @@
     <div class="container mt-3 mb-5">
         <!-- メニュー -->
         <div>
-            <a href="{% url 'app1:index' %}">注文処理</a>
+            <a href="{% url 'app1:index' %}"><button class="btn btn-outline-primary" type="submit" name="btn_upload">注文処理</button></a>
         </div>
 
         <!-- マスタ取込 -->
         <div class="mt-5 mb-5">
-            <h3>■マスタ取込</h3>
+            <h3 class="master_title">マスタ取込</h3>
             <div style="margin-top: 20px;">
-                <form action="{% url 'app1:master_csv' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+                <form>{% csrf_token %}
                     <div class="flex2">
                         <div>マスタ対象：</div>
                         <div>
@@ -32,15 +32,21 @@
                             </select>
                         </div>
                     </div>
-                    <div style="margin-top: 20px;"><input class="form-control" type="file" name="csv1" id="csv1" style="width: 400px;" required></div>
-                    <div style="margin-top: 20px;"><button class="btn btn-primary" type="submit" name="btn_upload">取込</button></div>
+                    <div style="margin-top: 20px;"><input class="form-control" type="file" name="csv1" style="width: 400px;"></div>
+                    <div class="flex2" style="margin-top: 20px;">
+                        <div>
+                            <button class="btn btn-primary" type="submit" formaction="{% url 'app1:master_csv' %}" formmethod="post" formenctype="multipart/form-data">取込</button>
+                        </div>
+                        <div style="margin-left: 30px;">
+                            <button class="btn btn-success" type="submit" formaction="{% url 'app1:download_master' %}" formmethod="post">マスタ出力</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
-        <hr>
         <!-- 画像取り込み -->
-        <div style="margin-top: 50px;">
-            <h3>■イメージ図取込</h3>
+        <div style="margin-top: 100px;">
+            <h3 class="master_title">イメージ図取込</h3>
             <div style="margin-top: 20px;">
                 <form action="{% url 'app1:img_imp' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
                     <div class="flex2">
@@ -68,7 +74,7 @@
     </div>
 
     <script>
-        
+
         // URLボタン
         var item=document.getElementsByName("url_btn");
         for (var i=0; i<item.length; i++){

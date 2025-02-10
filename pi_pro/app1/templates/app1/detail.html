@@ -18,7 +18,7 @@
 
         <!-- メニュー -->
         <div>
-            <a href="{% url 'app1:index' %}">注文一覧に戻る</a>
+            <a href="{% url 'app1:index' %}"><button class="btn btn-outline-primary" type="submit" name="btn_upload">注文一覧に戻る</button></a>
         </div>
 
         <!-- 注文詳細 -->
@@ -43,19 +43,19 @@
             </table>
         </div>
 
-        <div style="margin-top: 30px; width: 65%;">
+        <div style="margin-top: 30px; width: 850px;">
             <table class="table table-bordered">
                 <tbody class="table_1">
                     <tr>
-                        <th width="15%"><span id="pk" style="display: none;">{{pk}}</span></th>
-                        <th width="25%">注文者</th>
-                        <th>
-                            <div class="flex3" style="align-items: center;">
+                        <th width="120px"><span id="pk" style="display: none;">{{pk}}</span></th>
+                        <th width="230px">注文者</th>
+                        <th width="250px">
+                            <div class="flex2">
                                 <div>配送先</div>
-                                <div><button class="btn btn-primary btn-sm" id="btn_update">変更</button></div>
+                                <div style="margin-left: 30px;"><button class="btn btn-primary btn-sm" id="btn_update">変更</button></div>
                             </div>
                         </th>
-                        <th width="25%">送り主</th>
+                        <th>送り主</th>
                     </tr>
                     <tr>
                         <th>会社</th>
@@ -306,6 +306,38 @@
                     window.alert("変更しました！");
                 })
         });
+
+
+        // ボディ発注CSV
+        var item=document.getElementsByName("btn_body");
+        for (var i=0; i<item.length; i++){
+            item[i].addEventListener("click",function(){
+                var gara=this.id.replace("body_","");
+                var chumon_kubun=document.getElementById("chumon_kubun").innerText;
+                var chumon_order_num=document.getElementById("chumon_order_num").innerText;
+                var factory=document.getElementById("factory_" + gara).value;
+                
+                if(factory==""){
+                    window.alert("加工場を選択してください！");
+                    return
+                };
+
+                $.ajax({
+                    'url': '{% url "app1:make_body" %}',
+                    'type': 'POST',
+                    'data': {
+                        "chumon_kubun":chumon_kubun,
+                        "chumon_order_num":chumon_order_num,
+                        "gara":gara,
+                        "factory":factory,
+                    },
+                    'dataType': 'json'
+                })
+                .done(function(response){
+                    window.location.href='{% url "app1:download_body" %}';
+                })
+            },false)
+        };
 
 
         // 指示書CSV

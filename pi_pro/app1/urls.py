@@ -7,6 +7,8 @@ from .views import index,detail,detail_update,master_img_index,master_csv,img_im
 app_name="app1"
 urlpatterns = [
     path('', index, name="index"),
+    path('login/', auth_views.LoginView.as_view(template_name='app1/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('detail/<int:pk>/', detail, name="detail"),
     path('detail_update/', detail_update, name="detail_update"),
     path('master_img_index/', master_img_index, name="master_img_index"),

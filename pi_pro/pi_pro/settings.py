@@ -123,6 +123,10 @@ STATIC_URL = 'static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+LOGIN_URL = 'app1:login'
+LOGIN_REDIRECT_URL = 'app1:index'
+LOGOUT_REDIRECT_URL = 'app1:login'
+
 NUMBER_GROUPING = 3
 
 # Default primary key field type

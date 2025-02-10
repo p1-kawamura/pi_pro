@@ -9,8 +9,10 @@ from django.db.models import Max,Min,Sum
 import datetime
 from django.http import HttpResponse
 import urllib.parse
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
     if "kubun" not in request.session:
         request.session["kubun"]=""
@@ -64,6 +66,7 @@ def index(request):
 
 
 # 注文詳細
+@login_required
 def detail(request,pk):
     chumon=Order_list.objects.get(pk=pk)
     gara_list=list(Order_detail.objects.filter(kubun=chumon.kubun,order_num=chumon.order_num).values_list("gara",flat=True).order_by("gara").distinct())
@@ -590,6 +593,7 @@ def chumon_imp(request):
 
 
 # マスタ、画像取り込みページ
+@login_required
 def master_img_index(request):
     image_all=Image.objects.all()
     image_form=Image_form()

@@ -43,3 +43,22 @@ color: #494949;/*文字色*/
 background: #ffefdb;/*背景色*/
 border-left: solid 5px #ffaf58;/*左線（実線 太さ 色）*/
 }
+.login{
+    width: 300px;
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    border-top: solid 7px #808080;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.22);
+    margin: 0 auto;
+    margin-top: 200px;
+}
+.login_title {
+    color: #808080;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: left;
+    padding: 0.3em 0;
+    border-top: solid 3px #c0c0c0;
+    border-bottom: solid 3px #c0c0c0;
+    background-color: #f4f4f4;
+}

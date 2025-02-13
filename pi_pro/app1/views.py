@@ -240,7 +240,7 @@ def make_shijisho(request):
         i.shi_bikou=bikou
         i.gara_day=datetime.date.today().strftime("%Y-%m-%d")
         if i.img_url == None or i.img_url=="":
-            i.img_url=Image.objects.get(title=i.print_img).image.url
+            i.img_url="https://pipro.pythonanywhere.com" + Image.objects.get(title=i.print_img).image.url
         i.save()
 
         # CSV作成

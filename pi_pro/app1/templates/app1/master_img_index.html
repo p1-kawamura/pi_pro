@@ -79,7 +79,7 @@
         var item=document.getElementsByName("url_btn");
         for (var i=0; i<item.length; i++){
             item[i].addEventListener("click",function(){
-                navigator.clipboard.writeText(this.id);
+                navigator.clipboard.writeText("https://pipro.pythonanywhere.com/" + this.id);
                 window.alert("URLをコピーしました！");
             },false)
         };

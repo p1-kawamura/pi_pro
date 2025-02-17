@@ -80,7 +80,12 @@ def detail(request,pk):
         dic={}
         dic["gara"]=i
         dic["img"]=Image.objects.get(title=detail[0].print_img).image.url
+        dic["tantou"]=detail[0].shi_tantou or ""
+        dic["seisaku"]=detail[0].shi_seisaku or ""
         dic["factory"]=detail[0].shi_factory
+        dic["factory_day"]=detail[0].shi_factory_day
+        dic["body_day"]=detail[0].body_day
+        dic["bikou"]=detail[0].shi_bikou
         li=[]
         for i in detail:
             k=0
@@ -99,7 +104,7 @@ def detail(request,pk):
         dic["row_all"]=detail.count() * len(js_1)
         dic["row_point"]=len(js_1)
 
-        if detail[0].shi_gara_first == "":
+        if detail[0].shi_gara_first == "" or detail[0].shi_gara_first == None:
             gara_min=Order_detail.objects.filter(gara=i).aggregate(Min("gara_day"))["gara_day__min"]
             if  gara_min is None:
                 dic["gara_first"]=datetime.date.today().strftime("%Y-%m-%d")
@@ -108,7 +113,7 @@ def detail(request,pk):
         else:
             dic["gara_first"]=detail[0].shi_gara_first
 
-        if detail[0].shi_gara_last == "":
+        if detail[0].shi_gara_last == "" or detail[0].shi_gara_last == None:
             gara_max=Order_detail.objects.filter(gara=i).aggregate(Max("gara_day"))["gara_day__max"]
             if  gara_max is None:
                 dic["gara_last"]=""
@@ -116,8 +121,6 @@ def detail(request,pk):
                 dic["gara_last"]=gara_max
         else:
             dic["gara_last"]=detail[0].shi_gara_last
-
-        
 
         dic["moto_hinban"]=detail[0].shouhin_code
         dic["moto_hinmei"]=detail[0].hinmei

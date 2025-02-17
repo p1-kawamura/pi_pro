@@ -210,9 +210,9 @@
                         </div>
                         <div class="flex2 mt-4">
                             <div>営業担当：</div>
-                            <div><input class="form-control" type="text" id="tantou_{{i.gara}}" style="width: 120px;"></div>
+                            <div><input class="form-control" type="text" id="tantou_{{i.gara}}" value="{{i.tantou}}" style="width: 120px;"></div>
                             <div style="margin-left: 30px;">制作担当：</div>
-                            <div><input class="form-control" type="text" id="seisaku_{{i.gara}}" style="width: 120px;"></div>
+                            <div><input class="form-control" type="text" id="seisaku_{{i.gara}}" value="{{i.seisaku}}" style="width: 120px;"></div>
                         </div>
                         <div class="flex2 mt-4">
                             <div>加工場：</div>
@@ -231,15 +231,15 @@
                         </div>
                         <div class="flex2 mt-4">
                             <div>加工場発送日：</div>
-                            <div><input class="form-control" type="date" id="factory_day_{{i.gara}}" style="width: 140px;"></div>
+                            <div><input class="form-control" type="date" id="factory_day_{{i.gara}}" value="{{i.factory_day}}" style="width: 140px;"></div>
                         </div>
                         <div class="flex2 mt-4">
                             <div>ボディ入荷日：</div>
-                            <div><input class="form-control" type="date" id="body_day_{{i.gara}}" style="width: 140px;"></div>
+                            <div><input class="form-control" type="date" id="body_day_{{i.gara}}" value="{{i.body_day}}" style="width: 140px;"></div>
                         </div>
                         <div class="mt-4">
                             <div>備考欄</div>
-                            <div><textarea class="form-control" style="width: 100%;" id="bikou_{{i.gara}}" rows="5"></textarea></div>
+                            <div><textarea class="form-control" style="width: 100%;" id="bikou_{{i.gara}}" value="{{i.bikou}}" rows="5"></textarea></div>
                         </div>
                         <div class="flex2 mt-4">
                             <div><button class="btn btn-primary" id="body_{{i.gara}}" name="btn_body">ボディ発注CSV</button></div>

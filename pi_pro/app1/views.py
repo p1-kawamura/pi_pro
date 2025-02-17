@@ -83,8 +83,8 @@ def detail(request,pk):
         dic["tantou"]=detail[0].shi_tantou or ""
         dic["seisaku"]=detail[0].shi_seisaku or ""
         dic["factory"]=detail[0].shi_factory
-        dic["factory_day"]=detail[0].shi_factory_day
-        dic["body_day"]=detail[0].body_day
+        dic["factory_day"]=detail[0].shi_factory_day or ""
+        dic["body_day"]=detail[0].body_day or ""
         dic["bikou"]=detail[0].shi_bikou
         li=[]
         for i in detail:
@@ -606,7 +606,8 @@ def chumon_imp(request):
 
             h+=1
 
-    return redirect("app1:index")
+    d={}
+    return JsonResponse(d)
 
 
 # マスタ、画像取り込みページ

@@ -21,9 +21,9 @@
             <a href="{% url 'app1:master_img_index' %}"><button class="btn btn-outline-primary" type="submit" name="btn_upload">マスタ取込</button></a>
         </div>
 
-        <!-- 注文取込-->
+        <!--注文取込-->
         <div style="margin-top: 50px;">
-            <form action="{% url 'app1:chumon_imp' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+            <form id="csv_form">{% csrf_token %}
                 <div class="flex2">
                     <div>注文区分：</div>
                     <div>
@@ -33,8 +33,8 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div style="margin-left: 20px;"><input class="form-control" type="file" name="csv1" id="csv1" style="width: 400px;" required></div>
-                    <div style="margin-left: 20px;"><button class="btn btn-primary" type="submit" name="btn_upload">注文取込</button></div>
+                    <div style="margin-left: 20px;"><input class="form-control" type="file" name="csv1" id="csv1" style="width: 400px;"></div>
+                    <div style="margin-left: 20px;"><button class="btn btn-primary" type="button" id="btn_upload" >注文取込</button></div>
                 </div>  
             </form>
         </div>
@@ -106,7 +106,28 @@
         });
   
 
-
+        
+        // 注文CSV取込
+        document.getElementById("btn_upload").addEventListener("click",function(){
+            var csv_form=new FormData(document.getElementById("csv_form"));
+            var csv1=document.getElementById("csv1");
+            if (csv1.value == ""){
+                window.alert("注文ファイルを指定してください！");
+                return
+            };
+            $.ajax({
+                    'url': '{% url "app1:chumon_imp" %}',
+                    'type': 'POST',
+                    'data': csv_form,
+                    'processData': false,
+                    'contentType': false,
+                    'cache': false
+                })
+                .done(function(response){
+                    window.location.href = '{% url "app1:index" %}';
+                    window.alert("注文を取り込みました！");
+                })
+        });
         
         
 

@@ -17,6 +17,13 @@ class Master_all(models.Model):
         return self.name
 
 
+class Factory(models.Model):
+    factory=models.CharField("GSP_商品コード",max_length=255,blank=True,null=True)
+
+    def __str__(self):
+        return self.factory
+
+
 class Master_gsp(models.Model):
     unq_id=models.CharField("UNQ_ID",max_length=255)
     gsp_hinban=models.CharField("GSP_商品コード",max_length=255,blank=True,null=True)
@@ -46,6 +53,7 @@ class Master_gsp(models.Model):
     sender_com=models.CharField("送り主_会社",max_length=255,blank=True,null=True)
     sender_name=models.CharField("送り主_氏名",max_length=255,blank=True,null=True)
     sender_tel=models.CharField("送り主_電話番号",max_length=255,blank=True,null=True)
+    factory=models.CharField("加工場",max_length=255,blank=True,null=True)
 
     def __str__(self):
         return self.unq_id

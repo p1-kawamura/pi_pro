@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Image,Master_all,Master_gsp,Master_shopify,Order_list,Order_detail
+from .models import Image,Factory,Master_all,Master_gsp,Master_shopify,Order_list,Order_detail
 from django.contrib.admin import ModelAdmin
 
 class A_image(ModelAdmin):
@@ -26,6 +26,10 @@ class A_Order_detail(ModelAdmin):
     model=Order_detail
     list_display = ["kubun","order_num"]
 
+class A_Factory(ModelAdmin):
+    model=Factory
+    list_display = ["factory"]
+
 
 admin.site.register(Image, A_image)
 admin.site.register(Master_all, A_Master_all)
@@ -33,3 +37,4 @@ admin.site.register(Master_gsp, A_Master_gsp)
 admin.site.register(Master_shopify, A_Master_shopify)
 admin.site.register(Order_list, A_Order_list)
 admin.site.register(Order_detail, A_Order_detail)
+admin.site.register(Factory, A_Factory)

@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 import csv
-from .models import Image,Master_all,Master_gsp,Master_shopify,Order_list,Order_detail
+from .models import Image,Master_all,Master_gsp,Master_shopify,Order_list,Order_detail,Factory
 from .forms import Image_form
 import io
 from django.http import JsonResponse
@@ -69,6 +69,7 @@ def index(request):
 @login_required
 def detail(request,pk):
     chumon=Order_list.objects.get(pk=pk)
+    factory=Factory.objects.all()
     gara_list=list(Order_detail.objects.filter(kubun=chumon.kubun,order_num=chumon.order_num).values_list("gara",flat=True).order_by("gara").distinct())
     if chumon.kubun=="GSP":
         sender=Master_gsp.objects.filter(gara=gara_list[0])[0]
@@ -79,6 +80,7 @@ def detail(request,pk):
         dic={}
         dic["gara"]=i
         dic["img"]=Image.objects.get(title=detail[0].print_img).image.url
+        dic["factory"]=detail[0].shi_factory
         li=[]
         for i in detail:
             k=0
@@ -97,17 +99,25 @@ def detail(request,pk):
         dic["row_all"]=detail.count() * len(js_1)
         dic["row_point"]=len(js_1)
 
-        gara_min=Order_detail.objects.filter(gara=i).aggregate(Min("gara_day"))["gara_day__min"]
-        if  gara_min is None:
-            dic["gara_first"]=datetime.date.today().strftime("%Y-%m-%d")
+        if detail[0].shi_gara_first == "":
+            gara_min=Order_detail.objects.filter(gara=i).aggregate(Min("gara_day"))["gara_day__min"]
+            if  gara_min is None:
+                dic["gara_first"]=datetime.date.today().strftime("%Y-%m-%d")
+            else:
+                dic["gara_first"]=gara_min
         else:
-            dic["gara_first"]=gara_min
+            dic["gara_first"]=detail[0].shi_gara_first
 
-        gara_max=Order_detail.objects.filter(gara=i).aggregate(Max("gara_day"))["gara_day__max"]
-        if  gara_max is None:
-            dic["gara_last"]=""
+        if detail[0].shi_gara_last == "":
+            gara_max=Order_detail.objects.filter(gara=i).aggregate(Max("gara_day"))["gara_day__max"]
+            if  gara_max is None:
+                dic["gara_last"]=""
+            else:
+                dic["gara_last"]=gara_max
         else:
-            dic["gara_last"]=gara_max
+            dic["gara_last"]=detail[0].shi_gara_last
+
+        
 
         dic["moto_hinban"]=detail[0].shouhin_code
         dic["moto_hinmei"]=detail[0].hinmei
@@ -119,6 +129,7 @@ def detail(request,pk):
         "pk":pk,
         "item_list":item_list,
         "sender":sender,
+        "factory":factory,
     }
     return render(request,"app1/detail.html",params)
 
@@ -452,6 +463,7 @@ def chumon_imp(request):
                         print_size_height=con.print_size_height
                         print_color=con.print_color
                         fukuro=con.fukuro
+                        shi_factory=con.factory
                         
                     except:
                         color=""
@@ -472,6 +484,7 @@ def chumon_imp(request):
                         print_size_height=""
                         print_color=""
                         fukuro=""
+                        shi_factory=""
 
                     Order_detail.objects.create(
                         kubun=master_name,
@@ -498,7 +511,8 @@ def chumon_imp(request):
                         print_size_width=print_size_width,
                         print_size_height=print_size_height,
                         print_color=print_color,
-                        fukuro=fukuro
+                        fukuro=fukuro,
+                        shi_factory=shi_factory,
                     )
 
             h+=1
@@ -655,6 +669,7 @@ def master_csv(request):
                     "sender_com":i[25],
                     "sender_name":i[26],
                     "sender_tel":i[27],
+                    "factory":i[28],
                     }
                 )
             h+=1

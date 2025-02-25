@@ -39,6 +39,8 @@ def index(request):
         li_shi_factory=[]
         li_maker_name=[]
         li_suryo=[]
+        li_check=[]
+
         for h in li_hinmei:
             ins2=ins.filter(hinmei=h)
             li_gara.append(ins2[0].gara)
@@ -53,9 +55,10 @@ def index(request):
             li_shi_factory.append(ins2[0].shi_factory)
             li_maker_name.append(ins2[0].maker_name)
             li_suryo.append(ins2.aggregate(Sum("suryo"))["suryo__sum"])
+            li_check.append([ins2[0].body_check,ins2[0].shiji_check,ins2[0].ship_check])
 
         dic={"order_id":i.id,"kubun":i.kubun, "order_day":i.order_day, "hinmei":li_hinmei, "gara":li_gara, "print_way":li_print_way,
-             "factory":li_shi_factory, "maker":li_maker_name, "suryo":li_suryo}
+             "factory":li_shi_factory, "maker":li_maker_name, "suryo":li_suryo, "check":li_check}
         order_list.append(dic)
         
     params={
@@ -189,6 +192,10 @@ def make_body(request):
         ]
         body_csv.append(a)
 
+        # 発行済み
+        i.body_check=1
+        i.save()
+
     request.session["gara"]=gara
     request.session["kubun"]=chumon_kubun
     request.session["order_num"]=chumon_order_num
@@ -255,6 +262,7 @@ def make_shijisho(request):
         i.gara_day=datetime.date.today().strftime("%Y-%m-%d")
         if i.img_url == None or i.img_url=="":
             i.img_url="https://pipro.pythonanywhere.com" + Image.objects.get(title=i.print_img).image.url
+        i.shiji_check=1
         i.save()
 
         # CSV作成
@@ -376,6 +384,12 @@ def make_ship(request):
         "" #出荷表紙備考
     ]
     ship_csv.append(a)
+
+    # 出荷CSVチェック
+    ins=Order_detail.objects.filter(kubun=chumon_kubun,order_num=chumon_order_num,gara=gara)
+    for i in ins:
+        i.ship_check=1
+        i.save()
 
     request.session["gara"]=gara
     request.session["kubun"]=chumon_kubun

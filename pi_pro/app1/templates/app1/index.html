@@ -52,6 +52,7 @@
                     <th>メーカー</th>
                     <th>加工場</th>
                     <th>加工方法</th>
+                    <th>発行</th>
                 </tr>
                 {% for i in order_list %}
                 <tr>
@@ -64,6 +65,14 @@
                     <td>{% for h in i.maker %}{{h}}<br>{% endfor %}</td>
                     <td>{% for h in i.factory %}{% if h %}{{h}}{% endif %}<br>{% endfor %}</td>
                     <td>{% for h in i.print_way %}{{h}}<br>{% endfor %}</td>
+                    <td>
+                        {% for h in i.check %}
+                            {% if h.0 == 1 %}<button class="btn btn-primary btn-sm" type="button">ボ</button>{% else %}　{% endif %}
+                            {% if h.1 == 1 %}<button class="btn btn-success btn-sm" type="button">指</button>{% else %}　{% endif %}
+                            {% if h.2 == 1 %}<button class="btn btn-warning btn-sm" type="button">出</button>{% else %}　{% endif %}
+                            <br>
+                        {% endfor %}
+                    </td>
                 </tr>
                 {% endfor %}
             </table>

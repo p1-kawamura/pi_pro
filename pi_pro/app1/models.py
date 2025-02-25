@@ -145,6 +145,11 @@ class Order_detail(models.Model):
     shi_tantou=models.CharField("営業",max_length=255,blank=True,null=True)
     shi_seisaku=models.CharField("制作",max_length=255,blank=True,null=True)
     shi_bikou=models.CharField("備考",max_length=255,blank=True,null=True)
+    body_check=models.IntegerField("ボディ発注CSV",default=0)
+    shiji_check=models.IntegerField("指示書CSV",default=0)
+    ship_check=models.IntegerField("出荷CSV",default=0)
 
     def __str__(self):
         return self.order_num
+    
+    # body_check、shiji_check、ship_check （未発行:0　発行済:1）

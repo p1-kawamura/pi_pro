@@ -55,25 +55,29 @@
                     <th>発行</th>
                 </tr>
                 {% for i in order_list %}
-                <tr>
-                    <td style="text-align: center;"><a href="/detail/{{i.order_id}}">{{i.order_id}}</a></td>
-                    <td>{{i.order_day}}</td>
-                    <td>{{i.kubun}}</td>
-                    <td>{% for h in i.hinmei %}{{h}}<br>{% endfor %}</td>
-                    <td>{% for h in i.gara %}{{h}}<br>{% endfor %}</td>
-                    <td style="text-align: center;">{% for h in i.suryo %}{{h}}<br>{% endfor %}</td>
-                    <td>{% for h in i.maker %}{{h}}<br>{% endfor %}</td>
-                    <td>{% for h in i.factory %}{% if h %}{{h}}{% endif %}<br>{% endfor %}</td>
-                    <td>{% for h in i.print_way %}{{h}}<br>{% endfor %}</td>
-                    <td>
-                        {% for h in i.check %}
-                            {% if h.0 == 1 %}<button class="btn btn-primary btn-sm" type="button">ボ</button>{% else %}　{% endif %}
-                            {% if h.1 == 1 %}<button class="btn btn-success btn-sm" type="button">指</button>{% else %}　{% endif %}
-                            {% if h.2 == 1 %}<button class="btn btn-warning btn-sm" type="button">出</button>{% else %}　{% endif %}
-                            <br>
-                        {% endfor %}
-                    </td>
-                </tr>
+                    {% if i.odr_end == 1 %}
+                    <tr style="background-color: #c0c0c0;">
+                    {% else %}
+                    <tr>
+                    {% endif %}
+                        <td style="text-align: center;"><a href="/detail/{{i.order_id}}">{{i.order_id}}</a></td>
+                        <td>{{i.order_day}}</td>
+                        <td>{{i.kubun}}</td>
+                        <td>{% for h in i.hinmei %}{{h}}<br>{% endfor %}</td>
+                        <td>{% for h in i.gara %}{{h}}<br>{% endfor %}</td>
+                        <td style="text-align: center;">{% for h in i.suryo %}{{h}}<br>{% endfor %}</td>
+                        <td>{% for h in i.maker %}{{h}}<br>{% endfor %}</td>
+                        <td>{% for h in i.factory %}{% if h %}{{h}}{% endif %}<br>{% endfor %}</td>
+                        <td>{% for h in i.print_way %}{{h}}<br>{% endfor %}</td>
+                        <td>
+                            {% for h in i.check %}
+                                {% if h.0 == 1 %}<button class="btn btn-primary btn-sm" type="button">ボ</button>{% else %}　{% endif %}
+                                {% if h.1 == 1 %}<button class="btn btn-success btn-sm" type="button">指</button>{% else %}　{% endif %}
+                                {% if h.2 == 1 %}<button class="btn btn-warning btn-sm" type="button">出</button>{% else %}　{% endif %}
+                                <br>
+                            {% endfor %}
+                        </td>
+                    </tr>
                 {% endfor %}
             </table>
          </div>

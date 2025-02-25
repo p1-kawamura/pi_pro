@@ -28,8 +28,11 @@ def index(request):
     master_all=Master_all.objects.all()
     odr_list=Order_list.objects.all()
     order_list=[]
+    odr_end=0
     for i in odr_list:
         ins=Order_detail.objects.filter(kubun=i.kubun,order_num=i.order_num)
+        if ins.filter(body_check=0).count()==0 and ins.filter(shiji_check=0).count()==0 and ins.filter(ship_check=0).count()==0:
+            odr_end=1
         li_hinmei=[]
         for h in ins:
             if h.hinmei not in li_hinmei:
@@ -58,7 +61,7 @@ def index(request):
             li_check.append([ins2[0].body_check,ins2[0].shiji_check,ins2[0].ship_check])
 
         dic={"order_id":i.id,"kubun":i.kubun, "order_day":i.order_day, "hinmei":li_hinmei, "gara":li_gara, "print_way":li_print_way,
-             "factory":li_shi_factory, "maker":li_maker_name, "suryo":li_suryo, "check":li_check}
+             "factory":li_shi_factory, "maker":li_maker_name, "suryo":li_suryo, "check":li_check, "odr_end":odr_end}
         order_list.append(dic)
         
     params={
